@@ -12,7 +12,13 @@ public class Login {
     @Size(min = 2, message = "Password must be at least 2 characters long")
     private String password;
 
-    public Login() {}
+    private Captcha captcha;
+    private boolean isCaptchaShown;
+
+    public Login() {
+        this.captcha = new Captcha();
+        this.isCaptchaShown = false;
+    }
 
     public Login(String username, String password) {
         this.username = username;
@@ -30,6 +36,26 @@ public class Login {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void generateNewCaptcha() {
+        this.captcha = new Captcha();
+    }
+
+    public Captcha getCaptcha() {
+        return this.captcha;
+    }
+    
+    // public void setAnswer(Integer answer) {
+    //     this.captcha.setAnswer(answer);
+    // }
+    
+    public boolean isCaptchaShown() {
+        return isCaptchaShown;
+    }
+
+    public void setCaptchaShown(boolean isCaptchaShown) {
+        this.isCaptchaShown = isCaptchaShown;
     }
 
     public JsonObject toJSON() {

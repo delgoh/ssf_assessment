@@ -1,5 +1,7 @@
 package vttp2023.batch3.ssf.frontcontroller.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +11,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import jakarta.json.JsonObject;
 import vttp2023.batch3.ssf.frontcontroller.models.Login;
+import vttp2023.batch3.ssf.frontcontroller.respositories.AuthenticationRepository;
 
 @Service
 public class AuthenticationService {
+
+	@Autowired
+	private AuthenticationRepository authenticationRepository;
 
 	private String AUTHENTICATE_URL = "https://authservice-production-e8b2.up.railway.app";
 
@@ -25,10 +31,6 @@ public class AuthenticationService {
 			.toUriString();
 
 		JsonObject requestObj = new Login(username, password).toJSON();
-		// JsonObject requestObj = Json.createObjectBuilder()
-		// 	.add("username", username)
-		// 	.add("password", password)
-		// 	.build();
 
 		RequestEntity<String> req = RequestEntity
 			.post(requestUrl)
@@ -37,14 +39,14 @@ public class AuthenticationService {
 
 		RestTemplate template = new RestTemplate();
 		ResponseEntity<String> res = template.exchange(req, String.class);
-
-		System.out.println(res.getBody());
 	}
 
 	// TODO: Task 3
 	// DO NOT CHANGE THE METHOD'S SIGNATURE
 	// Write an implementation to disable a user account for 30 mins
 	public void disableUser(String username) {
+		authenticationRepository.disableNewUser(username);
+		System.out.println(username + " has been disabled haha");
 	}
 
 	// TODO: Task 5
@@ -52,5 +54,17 @@ public class AuthenticationService {
 	// Write an implementation to check if a given user's login has been disabled
 	public boolean isLocked(String username) {
 		return false;
+	}
+
+	public void addAuthenticatedSession(String sessionId) {
+		authenticationRepository.addAuthenticatedSession(sessionId);
+	}
+
+	public boolean isSessionAuthenticated(String sessionId) {
+		return authenticationRepository.isSessionAuthenticated(sessionId);
+	}
+
+	public void removeAuthenticatedSession(String sessionId) {
+		authenticationRepository.removeAuthenticatedSession(sessionId);
 	}
 }
