@@ -51,6 +51,7 @@
 							<span data-th-text="${login.captcha.operation}"></span>
 							<span data-th-text="${login.captcha.num2}"></span>
 						?</td>
+						<td>Round down to nearest integer.</td>
 					</tr>
 					<!-- <tr data-th-object="${login.captcha}"> -->
 					<tr>
@@ -58,7 +59,13 @@
 							<label for="answer">Answer:</label>
 						</td>
 						<td>
-							<input type="text" id="answer" size="30" data-th-field="${login.captcha.answer}">
+							<input type="text" id="answer" size="30" data-th-field="${login.captchaAnswer}">
+						</td>
+						<td>
+							<div data-th-if="${#fields.hasErrors('captcha')}">
+								<span data-th-errors="*{captcha}" data-th-errorclass="error"
+										style="color: red;"></span>
+							</div>
 						</td>
 					</tr>
 				</div>

@@ -14,6 +14,15 @@ public class Login {
 
     private Captcha captcha;
     private boolean isCaptchaShown;
+    private int captchaAnswer;
+
+    public int getCaptchaAnswer() {
+        return captchaAnswer;
+    }
+
+    public void setCaptchaAnswer(int captchaAnswer) {
+        this.captchaAnswer = captchaAnswer;
+    }
 
     public Login() {
         this.captcha = new Captcha();
@@ -46,16 +55,16 @@ public class Login {
         return this.captcha;
     }
     
-    // public void setAnswer(Integer answer) {
-    //     this.captcha.setAnswer(answer);
-    // }
-    
     public boolean isCaptchaShown() {
         return isCaptchaShown;
     }
 
     public void setCaptchaShown(boolean isCaptchaShown) {
         this.isCaptchaShown = isCaptchaShown;
+    }
+
+    public boolean isCaptchaCorrect() {
+        return this.getCaptcha().checkCaptcha(this.getCaptchaAnswer());
     }
 
     public JsonObject toJSON() {

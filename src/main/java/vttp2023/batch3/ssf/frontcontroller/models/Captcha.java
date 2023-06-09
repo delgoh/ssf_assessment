@@ -35,20 +35,20 @@ public class Captcha {
         this.answer = answer;
     }
     
-    public boolean checkCaptcha() {
-        if (this.answer == null) {
-            return false;
-        }
+    public boolean checkCaptcha(int answer) {
+        // if (this.answer == null) {
+        //     return false;
+        // }
 
         switch(this.operation) {
             case "+":
-                return this.answer == this.num1 + this.num2;
+                return answer == this.num1 + this.num2;
             case "-":
-                return this.answer == this.num1 - this.num2;
+                return answer == this.num1 - this.num2;
             case "*":
-                return this.answer == this.num1 * this.num2;
+                return answer == this.num1 * this.num2;
             case "/":
-                return this.answer == this.num1 / this.num2;
+                return answer == this.num1 / this.num2;
             default:
                 return false;
         }

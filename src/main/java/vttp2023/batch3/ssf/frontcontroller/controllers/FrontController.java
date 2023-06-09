@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -31,19 +32,23 @@ public class FrontController {
     public String login(@Valid Login login, BindingResult result, Model model, HttpSession session, RedirectAttributes ra) {
         System.out.println("Username keyed in: " + login.getUsername());
 
-        // if (captcha.isShown()) {
-        //     System.out.println("Captcha received");
-        //     System.out.println(captcha.getAnswer());
-        // } else {
-        //     System.out.println("No captcha here");
-        // }
-        // if (!login.isCaptchaShown()) {
-        //     System.out.println("No captcha exists yet");
-        // } else {
-        //     System.out.println("Captcha exists!" + login.getCaptcha().getNum1());
-        // }
+        if (login.isCaptchaShown()) {
+            System.out.println("Captcha is visible");
+            if (!login.isCaptchaCorrect()) {
+                System.out.println("Captcha is wrong");
+                FieldError err = new FieldError("login", "captcha", "Captcha is incorrect");
+                // result.rejectValue("captcha", "", "Captcha is incorrect");
+                result.addError(err);
+                login.generateNewCaptcha();
+                model.addAttribute("login", login);
+                return "view0";
+            }
+        }
+        
+        System.out.println("Captcha not shown yet");
 
         if (result.hasErrors()) {
+            model.addAttribute("login", login);
             return "view0";
         }
 
@@ -69,25 +74,10 @@ public class FrontController {
             model.addAttribute("login", login);
 			return "view0";
 		}
+        
+        authenticationService.resetLoginAttempt(login.getUsername());
 
-        // model.addAttribute("authenticatedUser", login.getUsername());
         ra.addFlashAttribute("sessionId", session.getId());
-
-        // if (session.getAttribute("authenticatedList") == null) {
-        //     List<String> authenticatedList = new ArrayList<>();
-        //     authenticatedList.add(login.getUsername());
-        //     session.setAttribute("authenticatedList", authenticatedList);
-        // } else {
-        //     List<String> authenticatedList = (List<String>) session.getAttribute("authenticatedList");
-        //     authenticatedList.add(login.getUsername());
-        //     session.setAttribute("authenticatedList", authenticatedList);
-        // }
-
-        // for (String authenticatedUser : (List<String>) session.getAttribute("authenticatedList")) {
-        //     System.out.println("Authenticated: " + authenticatedUser);
-        // }
-
-        // return "view1";
         return "redirect:/protected/view1.html";
     }
 

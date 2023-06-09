@@ -46,7 +46,6 @@ public class AuthenticationService {
 	// Write an implementation to disable a user account for 30 mins
 	public void disableUser(String username) {
 		authenticationRepository.disableNewUser(username);
-		System.out.println(username + " has been disabled haha");
 	}
 
 	// TODO: Task 5
