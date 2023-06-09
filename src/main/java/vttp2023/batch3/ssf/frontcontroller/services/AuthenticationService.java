@@ -53,7 +53,20 @@ public class AuthenticationService {
 	// DO NOT CHANGE THE METHOD'S SIGNATURE
 	// Write an implementation to check if a given user's login has been disabled
 	public boolean isLocked(String username) {
-		return false;
+		return authenticationRepository.isUserDisabled(username);
+	}
+
+	public void increaseLoginAttempt(String username) {
+		authenticationRepository.increaseLoginAttempt(username);
+	}
+
+	public boolean isAttemptsExceeded(String username) {
+		Integer attemptCount = authenticationRepository.getLoginAttempt(username);
+		return attemptCount >= 3;
+	}
+
+	public void resetLoginAttempt(String username) {
+		authenticationRepository.removeLoginAttempts(username);
 	}
 
 	public void addAuthenticatedSession(String sessionId) {

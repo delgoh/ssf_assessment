@@ -23,6 +23,25 @@ public class AuthenticationRepository {
 		return template.opsForValue().get(username) != null;
 	}
 
+
+	public void increaseLoginAttempt(String username) {
+		if (template.opsForHash().hasKey("USERS_LOGIN_COUNT", username)) {
+			int currentAttempt = Integer.parseInt((String) template.opsForHash().get("USERS_LOGIN_COUNT", username));
+			template.opsForHash().put("USERS_LOGIN_COUNT", username, String.valueOf(currentAttempt + 1));
+		} else {
+			template.opsForHash().put("USERS_LOGIN_COUNT", username, String.valueOf(1));
+		}
+	}
+
+	public Integer getLoginAttempt(String username) {
+		return Integer.parseInt((String) template.opsForHash().get("USERS_LOGIN_COUNT", username));
+	}
+
+	public void removeLoginAttempts(String username) {
+		template.opsForHash().delete("USERS_LOGIN_COUNT", username);
+	}
+
+
 	public void addAuthenticatedSession(String sessionId) {
 		template.opsForSet().add("AUTHENTICATED_SESSIONS", sessionId);
 	}

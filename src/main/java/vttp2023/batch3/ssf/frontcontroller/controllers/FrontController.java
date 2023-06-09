@@ -47,20 +47,20 @@ public class FrontController {
             return "view0";
         }
 
-        if (session.getAttribute("attemptCount") == null) {
-            session.setAttribute("attemptCount", 1);
-        } else {
-            session.setAttribute("attemptCount", (int) session.getAttribute("attemptCount") + 1);
+        if (authenticationService.isLocked(login.getUsername())) {
+            model.addAttribute("username", login.getUsername());
+            return "view2";
         }
 
-        System.out.println("Current attempt counts: " + session.getAttribute("attemptCount"));
+        authenticationService.increaseLoginAttempt(login.getUsername());
 
 		try {
 			authenticationService.authenticate(login.getUsername(), login.getPassword());
 		} catch (Exception e) {
             
-            if ((int) session.getAttribute("attemptCount") >= 3) {
+            if (authenticationService.isAttemptsExceeded(login.getUsername())) {
                 authenticationService.disableUser(login.getUsername());
+                authenticationService.resetLoginAttempt(login.getUsername());
                 model.addAttribute("username", login.getUsername());
                 return "view2";
             }

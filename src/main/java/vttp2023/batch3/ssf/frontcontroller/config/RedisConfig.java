@@ -52,6 +52,9 @@ public class RedisConfig {
         r.setKeySerializer(new StringRedisSerializer());
         r.setValueSerializer(r.getKeySerializer());
         
+        r.setHashKeySerializer(r.getKeySerializer());
+        r.setHashValueSerializer(r.getKeySerializer());
+        
         System.out.println("redisHost > " + redisHost);
         return r;
     }
